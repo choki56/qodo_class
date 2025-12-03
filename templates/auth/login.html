@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - HR EMS</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+  <style>
+    .login-wrapper { display:flex; align-items:center; justify-content:center; min-height:100vh; background: var(--page-bg); }
+    .login-card { display:grid; grid-template-columns: 140px 1fr; gap: 24px; padding:32px; border:1px solid var(--border); border-radius:12px; box-shadow: var(--card-shadow); width: 100%; max-width: 720px; }
+    .logo { display:flex; align-items:center; justify-content:center; background: var(--sidebar-bg); color:#fff; border-radius:8px; font-weight:800; letter-spacing:.08em; }
+    .logo span { transform: rotate(-90deg); white-space:nowrap; }
+    .login-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+  <div class="login-wrapper">
+    <div class="login-card">
+      <div class="logo"><span>EMS</span></div>
+      <div>
+        <div class="login-title">Welcome back</div>
+        <form method="post" class="form">
+          {% csrf_token %}
+          {{ form.non_field_errors }}
+          <div class="form-row">
+            <label>Username</label>
+            {{ form.username }}
+          </div>
+          <div class="form-row">
+            <label>Password</label>
+            {{ form.password }}
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn" style="width:100%">Login</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

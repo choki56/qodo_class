@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Edit Employee - HR EMS{% endblock %}
+{% block header %}Edit Employee{% endblock %}
+{% block content %}
+<form method="post" class="form">
+  {% csrf_token %}
+  <div class="form-row">
+    <label>Department</label>
+    {{ form.department }}
+  </div>
+  <div class="form-row">
+    <label>Title</label>
+    {{ form.title }}
+  </div>
+  <div class="form-row">
+    <label>Phone</label>
+    {{ form.phone }}
+  </div>
+  <div class="form-row">
+    <label>Start Date</label>
+    {{ form.start_date }}
+  </div>
+  <div class="form-actions">
+    <button class="btn" type="submit">Save</button>
+  </div>
+</form>
+{% endblock %}

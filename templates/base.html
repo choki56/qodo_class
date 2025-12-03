@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}HR EMS{% endblock %}</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">HR EMS</div>
+      {% if user.is_authenticated %}
+      <nav>
+        <a href="/">Dashboard</a>
+        <a href="/employees/">Employee Directory</a>
+        <a href="/attendance/">Attendance</a>
+        <a href="/leaves/">Leave Management</a>
+        <a href="/admin/">Admin</a>
+        <a href="/accounts/logout/">Logout</a>
+      </nav>
+      {% else %}
+      <nav>
+        <a href="/accounts/login/">Login</a>
+      </nav>
+      {% endif %}
+    </aside>
+    <main class="content">
+      <header class="topbar">
+        <div class="topbar-title">{% block header %}{% endblock %}</div>
+        <div class="topbar-user">
+          {% if user.is_authenticated %}
+            {{ user.get_full_name|default:user.username }}
+          {% endif %}
+        </div>
+      </header>
+      <section>
+        {% for message in messages %}
+          <div class="alert {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+        {% block content %}{% endblock %}
+      </section>
+    </main>
+  </div>
+</body>
+</html>

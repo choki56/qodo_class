@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Employee Directory - HR EMS{% endblock %}
+{% block header %}Employee Directory{% endblock %}
+{% block content %}
+<form method="get" class="form inline">
+  {{ form.q }}
+  {{ form.department }}
+  <button class="btn" type="submit">Search</button>
+  {% if is_manager %}
+  <a class="btn secondary" href="/employees/create/">Add Employee</a>
+  {% endif %}
+</form>
+<table class="table">
+  <thead>
+    <tr><th>Name</th><th>Department</th><th>Title</th>{% if is_manager %}<th>Actions</th>{% endif %}</tr>
+  </thead>
+  <tbody>
+    {% for e in employees %}
+      <tr>
+        <td>{{ e.user.get_full_name|default:e.user.username }}</td>
+        <td>{{ e.department }}</td>
+        <td>{{ e.title }}</td>
+        {% if is_manager %}
+        <td><a class="btn link" href="/employees/{{ e.id }}/edit/">Edit</a></td>
+        {% endif %}
+      </tr>
+    {% empty %}
+      <tr><td colspan="4">No employees found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

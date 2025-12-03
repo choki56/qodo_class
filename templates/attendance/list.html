@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Attendance - HR EMS{% endblock %}
+{% block header %}Attendance{% endblock %}
+{% block content %}
+<div class="actions">
+  <a class="btn" href="/attendance/checkin/">Check in</a>
+  {% if not is_manager %}
+    <span style="margin-left:10px;color:var(--muted)">Your recent check-ins</span>
+  {% endif %}
+</div>
+<table class="table">
+  <thead>
+    <tr><th>Employee</th><th>Date</th><th>Check-in</th><th>Status</th>{% if is_manager %}<th>Mark</th>{% endif %}</tr>
+  </thead>
+  <tbody>
+    {% for rec in records %}
+      <tr>
+        <td>{{ rec.employee.user.get_full_name|default:rec.employee.user.username }}</td>
+        <td>{{ rec.date }}</td>
+        <td>{% if rec.check_in %}{{ rec.check_in|date:'H:i' }}{% else %}-{% endif %}</td>
+        <td>{{ rec.status|title }}</td>
+        {% if is_manager %}
+        <td>
+          <a class="btn link" href="/attendance/mark/{{ rec.employee.id }}/?status=present">Present</a>
+          <a class="btn link" href="/attendance/mark/{{ rec.employee.id }}/?status=remote">Remote</a>
+          <a class="btn link" href="/attendance/mark/{{ rec.employee.id }}/?status=absent">Absent</a>
+        </td>
+        {% endif %}
+      </tr>
+    {% empty %}
+      <tr><td colspan="5">No attendance records yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
