@@ -1,0 +1,215 @@
+open /Users/govtech/Desktop/Qodo/ui/index.html<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>App Hub</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: #121a33;
+      --muted: #98a2b3;
+      --text: #e6e9ef;
+      --accent: #6ee7b7;
+      --accent-2: #60a5fa;
+      --danger: #f87171;
+      --focus: 0 0 0 3px rgba(96,165,250,.5);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 20% -10%, #1b264a, transparent),
+                  radial-gradient(1200px 800px at 120% 10%, #1a2b4d, transparent),
+                  var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .container {
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+      display: grid;
+      gap: 20px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .badge {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #0b1020;
+      font-weight: 700;
+      border-radius: 10px;
+      padding: 4px 10px;
+      font-size: 12px;
+      letter-spacing: 0.4px;
+    }
+
+    h1 { font-size: 1.6rem; margin: 0; }
+    p.sub { color: var(--muted); margin: 0; }
+
+    .card {
+      background: linear-gradient(180deg, #121a33, #10172f);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+
+    .btn {
+      appearance: none;
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      font-weight: 600;
+      color: #0b1020;
+      background: linear-gradient(135deg, var(--accent-2), var(--accent));
+      cursor: pointer;
+      transition: transform .06s ease, filter .15s ease, box-shadow .15s ease;
+      box-shadow: 0 6px 15px rgba(96,165,250,.25);
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+    }
+    .btn:hover { filter: brightness(1.05); }
+    .btn:active { transform: translateY(1px); }
+
+    .btn.secondary {
+      color: var(--text);
+      background: #0f162d;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: none;
+    }
+
+    .input {
+      appearance: none;
+      width: 100%;
+      padding: 12px 14px;
+      background: #0f162d;
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    .output {
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #0f162d;
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 14px;
+      border-radius: 10px;
+      min-height: 80px;
+      line-height: 1.5;
+    }
+
+    label { color: var(--muted); font-size: 14px; }
+  </style>
+  <script src="app.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="title">
+        <div class="badge" aria-hidden="true">Hub</div>
+        <div>
+          <h1>Application Hub</h1>
+          <p class="sub">Access Employee Management, Calculator, and Primes in one place.</p>
+        </div>
+      </div>
+      <div class="grid-2" style="min-width:320px;">
+        <a href="../employee_management_ui.html" class="btn" id="goEmployees">Go to Employee Management</a>
+        <a href="calculator.html" class="btn secondary">Open Calculator</a>
+      </div>
+    </header>
+
+    <section class="card" aria-labelledby="primes-heading">
+      <h2 id="primes-heading" style="margin:0 0 10px 0;font-size:1.1rem;">Primes 1–100</h2>
+      <div class="grid-2">
+        <div>
+          <label for="limit">Upper limit (inclusive)</label>
+          <input id="limit" class="input" type="number" inputmode="numeric" min="0" step="1" value="100" />
+        </div>
+        <div style="display:flex; align-items:flex-end; gap:10px;">
+          <button id="generate" class="btn" type="button">Show Primes</button>
+          <button id="copy" class="btn secondary" type="button" disabled>Copy</button>
+        </div>
+      </div>
+      <div class="output" id="output" tabindex="0" aria-label="Prime numbers output"></div>
+    </section>
+  </div>
+
+  <script>
+    // Redirect enhancement: if user not authenticated for employees, the employee page will redirect to login.
+    // We still load app to allow session display or future hub controls.
+
+    // Prime logic equivalent to primes_1_to_100.py
+    function isPrime(n) {
+      if (n < 2) return false;
+      if (n === 2) return true;
+      if (n % 2 === 0) return false;
+      const limit = Math.floor(Math.sqrt(n));
+      for (let i = 3; i <= limit; i += 2) {
+        if (n % i === 0) return false;
+      }
+      return true;
+    }
+
+    function primesUpTo(limit) {
+      const res = [];
+      for (let n = 2; n <= limit; n++) {
+        if (isPrime(n)) res.push(n);
+      }
+      return res;
+    }
+
+    const $limit = document.getElementById('limit');
+    const $generate = document.getElementById('generate');
+    const $copy = document.getElementById('copy');
+    const $output = document.getElementById('output');
+
+    function generate() {
+      const limit = Number(($limit.value || '').trim());
+      if (!Number.isInteger(limit) || limit < 0) {
+        $output.textContent = 'Please enter a non-negative integer.';
+        return;
+      }
+      const primes = primesUpTo(limit);
+      $output.textContent = primes.join(' ');
+      $copy.disabled = primes.length === 0;
+      if (primes.length > 0) $output.focus();
+    }
+
+    $generate.addEventListener('click', generate);
+    $limit.addEventListener('keydown', (e) => { if (e.key === 'Enter') generate(); });
+    $copy.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText($output.textContent || '');
+        $copy.textContent = 'Copied!';
+        setTimeout(() => ($copy.textContent = 'Copy'), 1200);
+      } catch { /* ignore */ }
+    });
+
+    // Auto-generate on load for default 100
+    window.addEventListener('DOMContentLoaded', generate);
+  </script>
+</body>
+</html>

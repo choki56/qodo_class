@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login</title>
+  <link rel="stylesheet" href="login.css" />
+</head>
+<body>
+  <main class="card" role="main">
+    <h1>Welcome back</h1>
+    <p class="subtitle">Please sign in to continue</p>
+
+    <form id="loginForm" novalidate>
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" class="input" placeholder="you@example.com" autocomplete="username" required />
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" class="input" placeholder="••••••••" autocomplete="current-password" minlength="6" required />
+      </div>
+
+      <div class="row">
+        <label class="checkbox">
+          <input type="checkbox" id="remember" name="remember" />
+          <span>Remember me</span>
+        </label>
+        <a href="#" class="link" aria-label="Forgot password">Forgot?</a>
+      </div>
+
+      <div class="error" id="error" aria-live="polite"></div>
+
+      <button type="submit" class="btn" id="submitBtn">Sign in</button>
+    </form>
+
+    <footer>
+      Don’t have an account? <a class="link" href="#">Create one</a>
+    </footer>
+  </main>
+
+  <script src="./app.js"></script>
+  <script>
+    (function(){
+      const form = document.getElementById('loginForm');
+      const email = document.getElementById('email');
+      const password = document.getElementById('password');
+      const errorEl = document.getElementById('error');
+      const submitBtn = document.getElementById('submitBtn');
+
+      function validateEmail(value) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(String(value).toLowerCase());
+      }
+
+      form.addEventListener('submit', async function(e){
+        e.preventDefault();
+        errorEl.textContent = '';
+
+        const emailVal = email.value.trim();
+        const passVal = password.value;
+
+        if (!emailVal || !validateEmail(emailVal)) {
+          errorEl.textContent = 'Enter a valid email address.';
+          email.focus();
+          return;
+        }
+        if (!passVal || passVal.length < 3) {
+          errorEl.textContent = 'Password must be at least 3 characters.';
+          password.focus();
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Signing in…';
+
+        // Use shared app.login
+        const res = window.app.login(emailVal, passVal);
+        await new Promise(r => setTimeout(r, 400));
+
+        if (!res.ok) {
+          errorEl.textContent = res.message || 'Sign in failed';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Sign in';
+          return;
+        }
+
+        // Success: redirect to employee UI
+        window.location.href = '../employee_management_ui.html';
+      });
+    })();
+  </script>
+</body>
+</html>
